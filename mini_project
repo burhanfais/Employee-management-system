@@ -1,0 +1,97 @@
+from tkinter import *
+import tkinter.messagebox as messagebox
+from tkinter import ttk
+import mysql.connector
+from mysql.connector import Error
+
+page = Tk()
+page.geometry("800x800")
+page.title("Employee Management System")
+page.configure(bg="light blue")
+
+
+name=StringVar()
+age=StringVar()
+gender=StringVar()
+email=StringVar()
+contact=StringVar()
+doj= StringVar()
+address= StringVar()
+
+
+def Database():
+    global conn,cursor
+    conn = mysql.connector.connect(host = "localhost",
+                                  user = "root",
+                                  passwd = "Root",
+                                  database = "mini_project",
+                                  auth_plugin="mysql_native_password")
+    cursor = conn.cursor()
+    a=name.get()
+    b=age.get()
+    c=gender.get()
+    d=email.get()
+    e=contact.get()
+    f=doj.get()
+    g=address.get()
+    if (a=="" or b==""or c=="" or d=="" or e=="" or f=="" or g==""):
+        messagebox.showinfo("fill details","fill all the details")
+    else:
+        data=("insert into `employee`(name,age,gender,email,contact,doj,address) values(%s,%s,%s,%s,%s,%s,%s)")
+        add=(a,b,c,d,e,f,g)
+        cursor.execute(data,add)
+        conn.commit()
+        lab=Label(entries_frame,text="Registered successfully",fg="green")
+        lab.grid(row=18,column=1,pady=20)
+        cursor.close()
+        conn.close()
+    
+    
+
+entries_frame=Frame(page,bg="light blue")
+entries_frame.pack(side=TOP,fill=X)
+heading=Label(entries_frame,text="Employee Management System",font=("times new roman",14))
+heading.grid(row=0,column=1)
+
+lblName=Label(entries_frame,text="Name")
+lblName.grid(row=1,column=0,padx=10,pady=10)
+txtName=Entry(entries_frame,textvariable= name,font=("times new roman",12),width=25)
+txtName.grid(row=1,column=1)
+
+lblAge=Label(entries_frame,text="Age")
+lblAge.grid(row=2,column=0,padx=10,pady=10)
+txtAge=Entry(entries_frame,textvariable= age,font=("times new roman",12),width=25)
+txtAge.grid(row=2,column=1)
+
+lblGender=Label(entries_frame,text="Gender")
+lblGender.grid(row=3,column=0,padx=10,pady=10)
+comboGender =ttk.Combobox(entries_frame,values=["Male","Female","Others"],textvariable= gender,font=("times new roman",12),width=25)
+comboGender.set("select gender")
+comboGender.grid(row=3,column=1,padx=10)
+
+lblEmail=Label(entries_frame,text="Email")
+lblEmail.grid(row=4,column=0,padx=10,pady=10)
+txtEmail=Entry(entries_frame,textvariable= email,font=("times new roman",12),width=25)
+txtEmail.grid(row=4,column=1)
+
+lblContact=Label(entries_frame,text="Contact")
+lblContact.grid(row=5,column=0,padx=10,pady=10)
+txtContact=Entry(entries_frame,textvariable= contact,font=("times new roman",12),width=25)
+txtContact.grid(row=5,column=1)
+
+lblDoj=Label(entries_frame,text="D.O.J")
+lblDoj.grid(row=6,column=0,padx=10,pady=10)
+txtDoj=Entry(entries_frame,textvariable= doj,font=("times new roman",12),width=25)
+txtDoj.grid(row=6,column=1)
+
+lblAddress = Label(entries_frame,text="Address")
+lblAddress.grid(row=7,column=0)
+txtAddress = Entry(entries_frame,textvariable= address,width=85)
+txtAddress.grid(row=7,column=1)
+
+btn_frame=Button(entries_frame,text="SUBMIT",activebackground="blue",command=Database)
+btn_frame.grid(row=16,column=1,pady=20)
+
+
+
+page.mainloop()
